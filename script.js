@@ -58,3 +58,4 @@ const gameBoard = (function(){
 gameBoard.choice('max', 1);
 gameBoard.choice('max', 4);
 gameBoard.choice('max', 7);
+
