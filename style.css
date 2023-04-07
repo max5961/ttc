@@ -1,0 +1,28 @@
+body {
+    height: 100vh;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.squareContainer {
+    height: 340px;
+    width: 340px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.square {
+    height: 100px;
+    width: 100px;
+    background-color: rgb(255, 0, 0);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
