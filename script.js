@@ -1,5 +1,6 @@
 const gameBoard = (function(){
     let board = [null, null, null, null, null, null, null, null, null];
+    let gameOver = false;
 
     const checkWin = board => {
 
@@ -11,6 +12,7 @@ const gameBoard = (function(){
                 if((board[i] === board[i+3] && board[i] === board[i+6]) &&
                     board[i] != null
                 ){
+                    gameOver = true;
                     console.log(`${board[i]} wins`)
                 }
             }
@@ -20,6 +22,7 @@ const gameBoard = (function(){
                 if((board[i] === board[i+1] && board[i] === board[i+2]) &&
                     board[i] != null
                     ){
+                    gameOver = true;
                     console.log(`${board[i]} wins`)
                 }
             }
@@ -29,14 +32,26 @@ const gameBoard = (function(){
         if((board[0] === board[4] && board[0] === board[8]) && 
             board[0] != null
             ){
+            gameOver = true;
             console.log(`${board[0]} wins`)
         }
 
         // check diagonal 2,4,6
         else if((board[2] === board[4] && board[2] === board[6]) &&
                 board[2] != null){
+                gameOver = true;
                 console.log(`${board[2]} wins`)
         }
+
+        // check for a tie game
+        else if(!board.includes(null)){
+            gameOver = true;
+            console.log('tie game');
+        }
+    }
+
+    const getGameOver = () => {
+        return gameOver;
     }
     
     const choice = (player, square) => {
@@ -50,11 +65,14 @@ const gameBoard = (function(){
     return {
         choice,
         checkWin,
+        getGameOver,
         board,
+        gameOver
+        
     }
 })();
 
-const clicks = (function(){
+const handleBoardClicks = (function(){
     let playerLog = [];
 
     function getDataIndexes(e){
@@ -83,12 +101,12 @@ const clicks = (function(){
 
     function changeText(player, square, e){
         player = getPlayer();
-        if(player === 'p1' && e.target.textContent === ''){
+        if(player === 'p1' && e.target.textContent === '' && !gameBoard.getGameOver()){
             pushPlayer();
             square.textContent = 'X';
             gameBoard.choice(player, getDataIndexes(e));
         } 
-        else if(player === 'p2' && e.target.textContent === '') {
+        else if(player === 'p2' && e.target.textContent === '' && !gameBoard.getGameOver()) {
             pushPlayer();
             square.textContent = 'O';
             gameBoard.choice(player, getDataIndexes(e));
@@ -105,7 +123,7 @@ const clicks = (function(){
 })();
 
 document.querySelectorAll('.square').forEach(square => {
-    square.addEventListener('click', (e) => {
-        clicks.changeText(clicks.getPlayer(), square, e);
-    })
+    square.addEventListener('click', function(e) {
+        handleBoardClicks.changeText(handleBoardClicks.getPlayer(), square, e)}
+    )
 })
