@@ -6,7 +6,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 50px;
-    background-color: #20c3a2;
+    background-color: #EDEDE9;
     color: #f2e0ce;
 }
 
@@ -34,11 +34,11 @@ button {
     gap: 5px;
 }
     button.square:active {
-        background-color: #1daa8e;
+        background-color: #c9c9c9;
     }
     .square {
-        background-color: #20c3a2;
-        color: #bdfff1;
+        background-color: #EDEDE9;
+        color: #313131;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -104,7 +104,8 @@ button {
 
 /* nav ---------------------------------------------------------------------- nav */
 nav {
-    background-color: #1a8d76;
+    background-color: #E3D5CA;
+    color: #524f4d;
     width: 100%;
     height: 200px;
     display: flex;
@@ -129,14 +130,14 @@ nav {
             width: 100px;
             height: 50px;
             border-radius: 1rem;
-            background-color: #f2e0ce;
-            color: #494139;
+            background-color: #EDEDE9;
+            color: #414141;
         }
         nav .navBtns button:hover {
-            background-color: rgb(124, 85, 85);
+            background-color: #ecff82;
         }
         nav .navBtns button:active {
-            background-color: rgb(94, 76, 76);
+            background-color: #e7ff5e;;
         }
 
 

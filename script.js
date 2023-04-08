@@ -135,7 +135,15 @@ const handleBoardClicks = (function(){
             document.querySelectorAll('.square').forEach(square => {
                 index = square.getAttribute('data-index');
                 if(indexes.toString().includes(index)){
-                    square.style.color = 'red';
+                    // choose green if winner.  
+                    if(indexes.length <= 3){
+                        square.style.color = '#5dba6f';
+                    }
+                    // choose red if tie
+                    else {
+                        square.style.color = '#ed6559'
+                    }
+                    
                 }
             })
         }
