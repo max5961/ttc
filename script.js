@@ -1,6 +1,7 @@
 const gameBoard = (function(){
     let board = [null, null, null, null, null, null, null, null, null];
     let gameOver = false;
+    let winningSquares = [];
 
     const checkWin = board => {
 
@@ -13,6 +14,7 @@ const gameBoard = (function(){
                     board[i] != null
                 ){
                     gameOver = true;
+                    winningSquares = [i, i+3, i+6];
                     console.log(`${board[i]} wins`)
                 }
             }
@@ -23,6 +25,7 @@ const gameBoard = (function(){
                     board[i] != null
                     ){
                     gameOver = true;
+                    winningSquares = [i, i+1, i+2];
                     console.log(`${board[i]} wins`)
                 }
             }
@@ -33,6 +36,7 @@ const gameBoard = (function(){
             board[0] != null
             ){
             gameOver = true;
+            winningSquares = [0,4,8];
             console.log(`${board[0]} wins`)
         }
 
@@ -40,14 +44,20 @@ const gameBoard = (function(){
         else if((board[2] === board[4] && board[2] === board[6]) &&
                 board[2] != null){
                 gameOver = true;
+                winningSquares = [2,4,6]
                 console.log(`${board[2]} wins`)
         }
 
         // check for a tie game
         else if(!board.includes(null)){
             gameOver = true;
+            winningSquares = [0,1,2,3,4,5,6,7,8];
             console.log('tie game');
         }
+    }
+
+    const getWinSquares = () => {
+        return winningSquares;
     }
 
     const getGameOver = () => {
@@ -66,6 +76,7 @@ const gameBoard = (function(){
         choice,
         checkWin,
         getGameOver,
+        getWinSquares,
         board,
         gameOver
         
@@ -113,11 +124,25 @@ const handleBoardClicks = (function(){
         }
     }
 
+    function gameOver(){
+        if(gameBoard.getGameOver()){
+            let indexes = gameBoard.getWinSquares()
+            console.log(indexes);
+            document.querySelectorAll('.square').forEach(square => {
+                index = square.getAttribute('data-index');
+                if(indexes.toString().includes(index)){
+                    square.style.color = 'red';
+                }
+            })
+        }
+    }
+
     return {
         playerLog,
         getDataIndexes,
         getPlayer,
         pushPlayer,
+        gameOver,
         changeText
     }
 })();
@@ -126,6 +151,7 @@ function handleBoardClick(e){
     const player = handleBoardClicks.getPlayer();
     const square = e.target;
     handleBoardClicks.changeText(player, square, e)
+    handleBoardClicks.gameOver();
 }
 
 document.querySelectorAll('.square').forEach(square => {

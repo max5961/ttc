@@ -7,6 +7,7 @@ body {
     align-items: center;
     gap: 50px;
     background-color: #20c3a2;
+    color: #f2e0ce;
 }
 
 body * {
@@ -128,6 +129,8 @@ nav {
             width: 100px;
             height: 50px;
             border-radius: 1rem;
+            background-color: #f2e0ce;
+            color: #494139;
         }
         nav .navBtns button:hover {
             background-color: rgb(124, 85, 85);
