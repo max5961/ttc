@@ -34,11 +34,11 @@ button {
     gap: 5px;
 }
     button.square:active {
-        background-color: rgb(189, 189, 189);
+        background-color: #1daa8e;
     }
     .square {
-        background-color: white;
-        color: black;
+        background-color: #20c3a2;
+        color: #bdfff1;
         display: flex;
         justify-content: center;
         align-items: center;

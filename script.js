@@ -16,6 +16,7 @@ const gameBoard = (function(){
                     gameOver = true;
                     winningSquares = [i, i+3, i+6];
                     console.log(`${board[i]} wins`)
+                    return
                 }
             }
 
@@ -27,6 +28,7 @@ const gameBoard = (function(){
                     gameOver = true;
                     winningSquares = [i, i+1, i+2];
                     console.log(`${board[i]} wins`)
+                    return
                 }
             }
         }
@@ -38,6 +40,7 @@ const gameBoard = (function(){
             gameOver = true;
             winningSquares = [0,4,8];
             console.log(`${board[0]} wins`)
+            return
         }
 
         // check diagonal 2,4,6
@@ -46,6 +49,7 @@ const gameBoard = (function(){
                 gameOver = true;
                 winningSquares = [2,4,6]
                 console.log(`${board[2]} wins`)
+                return
         }
 
         // check for a tie game
