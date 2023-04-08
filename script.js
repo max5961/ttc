@@ -122,8 +122,12 @@ const handleBoardClicks = (function(){
     }
 })();
 
+function handleBoardClick(e){
+    const player = handleBoardClicks.getPlayer();
+    const square = e.target;
+    handleBoardClicks.changeText(player, square, e)
+}
+
 document.querySelectorAll('.square').forEach(square => {
-    square.addEventListener('click', function(e) {
-        handleBoardClicks.changeText(handleBoardClicks.getPlayer(), square, e)}
-    )
+    square.addEventListener('click',  handleBoardClick)
 })
