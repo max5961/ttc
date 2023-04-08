@@ -1,36 +1,155 @@
 body {
     height: 100vh;
-    width: auto;
+    
+    margin: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    gap: 50px;
+    background-color: #20c3a2;
 }
 
-.squareContainer {
-    height: 300px;
-    width: 300px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1%;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid black;
+body * {
+    box-sizing: border-box;
 }
 
 button {
     border: 0;
     padding: 0;
     margin: 0;
+    background-color: none;
 }
 
-.square {
-    height: 32%;
-    width: 32%;
-    background-color: rgb(255, 0, 0);
+/* gameboard --------------------------------------------------------------- gameboard */
+.gameboard {
+    height: 400px;
+    width: 400px;
+    background-color: black;
+    visibility: visible;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 5px;
+}
+    button.square:active {
+        background-color: rgb(189, 189, 189);
+    }
+    .square {
+        background-color: white;
+        color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 4rem;
+    }
+
+/* chooseMode ---------------------------------------------------------------------------- */
+.chooseMode,
+.chooseDifficulty {
+    position: absolute;
+    visibility: visible;
+    height: 400px;
+    width: 400px;
+    padding: 50px;
+    background-color: rgb(158, 158, 158);
     color: white;
+    border: 2px solid black;
+    border-radius: 1rem;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    font-size: 4rem;
+    justify-content: space-between;
+}
+    .chooseMode p,
+    .chooseDifficulty p {
+        font-size: 3rem;
+        text-align: center;
+        margin: 0;
+    }
+    .chooseMode .btnsContainer,
+    .chooseDifficulty .btnsContainer {
+        width: 100%;
+        height: 20%;
+        display: flex;
+        justify-content: space-between;
+    }
+    .chooseMode button,
+    .chooseDifficulty button{
+        height: 100%;
+        width: 35%;
+        border-radius: 1rem;
+        border: 2px solid black;
+        font-size: 1.1rem;
+        background-color: white;
+    }
+    .chooseMode button:hover,
+    .chooseDifficulty button:hover {
+        background-color: rgb(255, 253, 123);
+    }
+    .chooseMode button:active,
+    .chooseDifficulty button:active {
+        background-color: rgb(255, 252, 54);
+    }
+
+    .chooseMode {
+        z-index: 2;
+        visibility: hidden;
+    }
+    .chooseDifficulty {
+        z-index: 1;
+        visibility: hidden;
+    }
+
+/* nav ---------------------------------------------------------------------- nav */
+nav {
+    background-color: #1a8d76;
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0;
+}
+    nav h1 {
+        font-size: 5rem;
+        text-align: center;
+        margin: 0;
+    }
+    nav .navBtns {
+        display: flex;
+        max-width: 50%;
+        min-width: 300px;
+        justify-content: space-between;
+    }
+        nav .navBtns button {
+            width: 100px;
+            height: 50px;
+            border-radius: 1rem;
+        }
+        nav .navBtns button:hover {
+            background-color: rgb(124, 85, 85);
+        }
+        nav .navBtns button:active {
+            background-color: rgb(94, 76, 76);
+        }
+
+
+@media only screen and (max-width: 450px) {
+    .gameboard,
+    .chooseMode,
+    .chooseDifficulty {
+        height: 300px;
+        width: 300px;
+    }
+    nav {
+        height: 150px;
+        gap: 10px;
+    }
+        nav h1 {
+            font-size: 3rem;
+        }
 }
 

@@ -8,16 +8,39 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <div class="squareContainer">
-        <button class="square 0">X</button>
-        <button class="square 1">O</button>
-        <button class="square 2"></button>
-        <button class="square 3"></button>
-        <button class="square 4"></button>
-        <button class="square 5"></button>
-        <button class="square 6"></button>
-        <button class="square 7"></button>
-        <button class="square 8"></button>
+    <nav>
+        <h1>Tic Tac Toe</h1>
+        <div class="navBtns">
+            <button class="startOver">Start Over</button>
+            <button class="gameMode">Play against computer</button>
+        </div>
+    </nav>
+    <div class="gameboard">
+        <button class="square" data-index="0"></button>
+        <button class="square" data-index="1"></button>
+        <button class="square" data-index="2"></button>
+        <button class="square" data-index="3"></button>
+        <button class="square" data-index="4"></button>
+        <button class="square" data-index="5"></button>
+        <button class="square" data-index="6"></button>
+        <button class="square" data-index="7"></button>
+        <button class="square" data-index="8"></button>
+    </div>
+
+    <div class="chooseMode">
+        <p>Play against a human or computer?</p>
+        <div class="btnsContainer">
+            <button class="human">Human</button>
+        <button class="computer">Computer</button>
+        </div> 
+    </div>
+
+    <div class="chooseDifficulty">
+        <p>Choose difficulty</p>
+        <div class="btnContainer">
+            <button class="easy">Easy</button>
+            <button class="hard">Hard</button>
+        </div>
     </div>
     
     <script src="./script.js"></script>
