@@ -60,14 +60,6 @@ const gameBoard = (function(){
         }
     }
 
-    const getWinSquares = () => {
-        return winningSquares;
-    }
-
-    const getGameOver = () => {
-        return gameOver;
-    }
-    
     const choice = (player, square) => {
         if(board[square] === null){
             board[square] = player;
@@ -76,11 +68,33 @@ const gameBoard = (function(){
         checkWin(board);
     }
 
+    const resetBoard = () => {
+        board = [null, null, null, null, null, null, null, null, null];
+        gameOver = false;
+        winningSquares = [];
+
+    }
+
+    const getWinSquares = () => {
+        return winningSquares;
+    }
+
+    const getGameOver = () => {
+        return gameOver;
+    }
+
+    const getBoard = () => {
+        return board;
+    }
+    
+
     return {
         choice,
         checkWin,
         getGameOver,
         getWinSquares,
+        resetBoard,
+        getBoard,
         board,
         gameOver
         
@@ -95,33 +109,33 @@ const handleBoardClicks = (function(){
     }
 
     function getPlayer(){
-        if(playerLog[playerLog.length - 1] === 'p1'){
-            return 'p2';
+        if(playerLog[playerLog.length - 1] === 'Player 1'){
+            return 'Player 2';
         }
         else {
-            return 'p1';
+            return 'Player 1';
         }
     }
 
     function pushPlayer(){
 
-        if(playerLog[playerLog.length - 1] === 'p1'){
-            playerLog.push('p2');
+        if(playerLog[playerLog.length - 1] === 'Player 1'){
+            playerLog.push('Player 2');
         } 
         
         else {
-            playerLog.push('p1');
+            playerLog.push('Player 1');
         }
     }
 
     function changeText(player, square, e){
         player = getPlayer();
-        if(player === 'p1' && e.target.textContent === '' && !gameBoard.getGameOver()){
+        if(player === 'Player 1' && e.target.textContent === '' && !gameBoard.getGameOver()){
             pushPlayer();
             square.textContent = 'X';
             gameBoard.choice(player, getDataIndexes(e));
         } 
-        else if(player === 'p2' && e.target.textContent === '' && !gameBoard.getGameOver()) {
+        else if(player === 'Player 2' && e.target.textContent === '' && !gameBoard.getGameOver()) {
             pushPlayer();
             square.textContent = 'O';
             gameBoard.choice(player, getDataIndexes(e));
@@ -135,11 +149,11 @@ const handleBoardClicks = (function(){
             document.querySelectorAll('.square').forEach(square => {
                 index = square.getAttribute('data-index');
                 if(indexes.toString().includes(index)){
-                    // choose green if winner.  
+                    // color winning row green if a winner is declared  
                     if(indexes.length <= 3){
                         square.style.color = '#5dba6f';
                     }
-                    // choose red if tie
+                    // color all squares red if tie
                     else {
                         square.style.color = '#ed6559'
                     }
@@ -149,13 +163,37 @@ const handleBoardClicks = (function(){
         }
     }
 
+    function resetBoard(){
+        document.querySelectorAll('.square').forEach(square => {
+            square.textContent = '';
+            square.style.color = '#313131';
+        })
+    }
+
     return {
         playerLog,
         getDataIndexes,
         getPlayer,
         pushPlayer,
         gameOver,
-        changeText
+        changeText,
+        resetBoard
+    }
+})();
+
+const computerChoice = (function(){
+    const computerChoiceEasy = () => {
+        let board = gameBoard.getBoard();
+        let computerIndex = Math.floor(Math.random() * 8)
+        while(board[computerIndex] === null){
+            computerIndex = Math.floor(Math.random() * 8);
+        }
+    }
+
+    
+    return {
+        computerChoiceEasy
+
     }
 })();
 
@@ -169,3 +207,11 @@ function handleBoardClick(e){
 document.querySelectorAll('.square').forEach(square => {
     square.addEventListener('click',  handleBoardClick)
 })
+
+function clearGameBoard(){
+    handleBoardClicks.resetBoard();
+    gameBoard.resetBoard();
+}
+
+document.querySelector('.startOver').addEventListener('click', clearGameBoard)
+
