@@ -1,8 +1,36 @@
+const user = (name, symbol, computer) => {
+    return {
+        name,
+        symbol,
+        computer
+    }
+}
+
+const p1 = user('p1', 'X', false);
+const p2 = user('p2', 'O', false);
+const cpu = user('cpu', 'O', true);
+
+
 const gameBoard = (function(){
+
     let board = [null, null, null, null, null, null, null, null, null];
     let gameOver = false;
     let winningSquares = [];
 
+    // getters
+    const getBoard = () => {
+        return board;
+    }
+
+    const getGameOver = () => {
+        return gameOver;
+    }
+
+    const getWinningSquares = () => {
+        return winningSquares;
+    }
+
+    // module methods
     const checkWin = board => {
 
         //check columns and rows
@@ -60,158 +88,129 @@ const gameBoard = (function(){
         }
     }
 
-    const choice = (player, square) => {
-        if(board[square] === null){
-            board[square] = player;
+    const placeChoice = (index,symbol) => {
+        if(board[index] === null){
+            board[index] = symbol;
         }
-        console.log(board);
         checkWin(board);
     }
 
-    const resetBoard = () => {
-        board = [null, null, null, null, null, null, null, null, null];
-        gameOver = false;
-        winningSquares = [];
-
-    }
-
-    const getWinSquares = () => {
-        return winningSquares;
-    }
-
-    const getGameOver = () => {
-        return gameOver;
-    }
-
-    const getBoard = () => {
-        return board;
-    }
-    
-
     return {
-        choice,
-        checkWin,
-        getGameOver,
-        getWinSquares,
-        resetBoard,
+        //getters
         getBoard,
-        board,
-        gameOver
+        getGameOver,
+        getWinningSquares,
+
+        //module methods
+        checkWin,
+        placeChoice,
         
     }
 })();
 
-const handleBoardClicks = (function(){
-    let playerLog = [];
+const handleClicks = (function(){
+    let firstPlayer = true;
+    let computerMode = true;
 
-    function getDataIndexes(e){
-        return e.target.getAttribute('data-index');
+    const getDataIndex = (e) => e.target.getAttribute('data-index');
+
+    const changeInputter = () => {
+        firstPlayer = !firstPlayer;
     }
 
-    function getPlayer(){
-        if(playerLog[playerLog.length - 1] === 'Player 1'){
-            return 'Player 2';
+    const getPlayer = () => {
+        if(firstPlayer && !computerMode){
+            return p1;
         }
-        else {
-            return 'Player 1';
+
+        else if(firstPlayer){
+            changeInputter();
+            return p1;
         }
-    }
 
-    function pushPlayer(){
-
-        if(playerLog[playerLog.length - 1] === 'Player 1'){
-            playerLog.push('Player 2');
-        } 
-        
-        else {
-            playerLog.push('Player 1');
+        else if(!firstPlayer && !computerMode){
+            changeInputter();
+            return p2
         }
     }
 
-    function changeText(player, square, e){
+    const placeChoice = (e) => {
         player = getPlayer();
-        if(player === 'Player 1' && e.target.textContent === '' && !gameBoard.getGameOver()){
-            pushPlayer();
-            square.textContent = 'X';
-            gameBoard.choice(player, getDataIndexes(e));
-        } 
-        else if(player === 'Player 2' && e.target.textContent === '' && !gameBoard.getGameOver()) {
-            pushPlayer();
-            square.textContent = 'O';
-            gameBoard.choice(player, getDataIndexes(e));
+        console.log(player);
+        
+        if(e.target.textContent === '' && !gameBoard.getGameOver()){
+                e.target.textContent = player.symbol;
+                gameBoard.placeChoice(getDataIndex(e), player.symbol)
+
+                if(computerMode){
+                    placeComputerChoice();
+                }
+            }
         }
+    
+
+    const placeComputerChoice = () => {
+        const board = gameBoard.getBoard();
+
+        const getRandomChoice = () => Math.floor(Math.random() * 8);
+
+        let index = getRandomChoice()
+        while(board[index] != null){
+            index = getRandomChoice();
+        }
+
+        gameBoard.placeChoice(index, cpu.symbol);
+        changeInputter();
+        updateComputerGUI(index);
     }
 
-    function gameOver(){
+    const updateComputerGUI = (index) => {
+        console.log()
+        document.querySelectorAll('.square').forEach(square => {
+            if(square.getAttribute('data-index') == index) {
+                square.textContent = cpu.symbol;
+            }
+        })
+    }
+
+    const gameOver = () => {
         if(gameBoard.getGameOver()){
-            let indexes = gameBoard.getWinSquares()
-            console.log(indexes);
+            let indexes = gameBoard.getWinningSquares();
             document.querySelectorAll('.square').forEach(square => {
-                index = square.getAttribute('data-index');
+                const index = square.getAttribute('data-index');
                 if(indexes.toString().includes(index)){
-                    // color winning row green if a winner is declared  
-                    if(indexes.length <= 3){
+                    if(indexes.length === 3){
                         square.style.color = '#5dba6f';
                     }
-                    // color all squares red if tie
+
                     else {
-                        square.style.color = '#ed6559'
+                        square.style.color = '#ed6559';
                     }
-                    
                 }
             })
         }
     }
-
-    function resetBoard(){
-        document.querySelectorAll('.square').forEach(square => {
-            square.textContent = '';
-            square.style.color = '#313131';
-        })
-    }
-
+        
     return {
-        playerLog,
-        getDataIndexes,
+        firstPlayer,
+        getDataIndex,
+        changeInputter,
         getPlayer,
-        pushPlayer,
+        placeChoice,
+        placeComputerChoice,
+        updateComputerGUI,
         gameOver,
-        changeText,
-        resetBoard
     }
 })();
 
-const computerChoice = (function(){
-    const computerChoiceEasy = () => {
-        let board = gameBoard.getBoard();
-        let computerIndex = Math.floor(Math.random() * 8)
-        while(board[computerIndex] === null){
-            computerIndex = Math.floor(Math.random() * 8);
-        }
-    }
-
-    
-    return {
-        computerChoiceEasy
-
-    }
-})();
-
-function handleBoardClick(e){
-    const player = handleBoardClicks.getPlayer();
-    const square = e.target;
-    handleBoardClicks.changeText(player, square, e)
-    handleBoardClicks.gameOver();
+const placeChoice = (e) => {
+    handleClicks.placeChoice(e);
+    handleClicks.gameOver();
 }
 
 document.querySelectorAll('.square').forEach(square => {
-    square.addEventListener('click',  handleBoardClick)
+    square.addEventListener('click', placeChoice)
 })
 
-function clearGameBoard(){
-    handleBoardClicks.resetBoard();
-    gameBoard.resetBoard();
-}
 
-document.querySelector('.startOver').addEventListener('click', clearGameBoard)
 
