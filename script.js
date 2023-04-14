@@ -1,19 +1,24 @@
-const user = (name, symbol, computer) => {
+const user = (name, symbol, computer, mode) => {
     return {
         name,
         symbol,
-        computer
+        computer,
+        mode
     }
 }
 
-const p1 = user('p1', 'X', false);
-const p2 = user('p2', 'O', false);
-const cpu = user('cpu', 'O', true);
+const p1 = user('p1', 'X', false, null);
+const p2 = user('p2', 'O', false, null);
+const cpuEasy = user('cpuEasy', 'O', true, 'easy');
+const cpuHard = user('cpuHard', 'O', true, 'hard');
 
 
+// gameBoard module
 const gameBoard = (function(){
 
-    let board = [null, null, null, null, null, null, null, null, null];
+    let board = [null, null, null,
+                null, null, null,
+                null, null, null]
     let gameOver = false;
     let winningSquares = [];
 
@@ -30,8 +35,8 @@ const gameBoard = (function(){
         return winningSquares;
     }
 
-    // module methods
-    const checkWin = board => {
+    // methods
+    const checkWin = () => {
 
         //check columns and rows
         for(let i = 0; i < 9; i++){
@@ -88,129 +93,200 @@ const gameBoard = (function(){
         }
     }
 
-    const placeChoice = (index,symbol) => {
+    const placeChoice = (index, symbol) => {
         if(board[index] === null){
             board[index] = symbol;
+
         }
-        checkWin(board);
+
+        checkWin();
     }
 
+    const resetGame = () => {
+        board = [null, null, null,
+            null, null, null,
+            null, null, null];
+
+            gameOver = false;
+
+            winningSquares = []
+    }
+
+    const adequateSquares = () => {
+        // if there is only one square left that is not null, then the computerChoice will not be able to run because the playerChoice will occupy that square.
+
+        return
+    }
+
+
     return {
-        //getters
+        // getters
         getBoard,
         getGameOver,
         getWinningSquares,
 
-        //module methods
+        // methods
         checkWin,
         placeChoice,
-        
+        resetGame,
     }
+
 })();
 
+// handleClick module
 const handleClicks = (function(){
-    let firstPlayer = true;
-    let computerMode = true;
+
+    let computerModeEasy = true;
+    let computerModeHard = false;
+    let inputter = p1;
 
     const getDataIndex = (e) => e.target.getAttribute('data-index');
 
     const changeInputter = () => {
-        firstPlayer = !firstPlayer;
-    }
-
-    const getPlayer = () => {
-        if(firstPlayer && !computerMode){
-            return p1;
+        if(inputter === p1){
+            inputter = p2
         }
 
-        else if(firstPlayer){
-            changeInputter();
-            return p1;
-        }
-
-        else if(!firstPlayer && !computerMode){
-            changeInputter();
-            return p2
+        else if(inputter === p2){
+            inputter = p1;
         }
     }
 
     const placeChoice = (e) => {
-        player = getPlayer();
-        console.log(player);
-        
-        if(e.target.textContent === '' && !gameBoard.getGameOver()){
-                e.target.textContent = player.symbol;
-                gameBoard.placeChoice(getDataIndex(e), player.symbol)
 
-                if(computerMode){
-                    placeComputerChoice();
-                }
+        if(e.target.textContent === '' && !gameBoard.getGameOver()){
+            e.target.textContent = inputter.symbol;
+            gameBoard.placeChoice(getDataIndex(e), inputter.symbol);
+            changeInputter();
+
+            if(computerModeEasy || computerModeHard){
+                placeComputerChoice();
+
+                // change inputter back to p1 because the inputter is changed on every square click
+                changeInputter();
             }
         }
-    
-
-    const placeComputerChoice = () => {
-        const board = gameBoard.getBoard();
-
-        const getRandomChoice = () => Math.floor(Math.random() * 8);
-
-        let index = getRandomChoice()
-        while(board[index] != null){
-            index = getRandomChoice();
-        }
-
-        gameBoard.placeChoice(index, cpu.symbol);
-        changeInputter();
-        updateComputerGUI(index);
     }
 
-    const updateComputerGUI = (index) => {
-        console.log()
-        document.querySelectorAll('.square').forEach(square => {
-            if(square.getAttribute('data-index') == index) {
-                square.textContent = cpu.symbol;
-            }
-        })
+    const placeComputerChoice = () => {
+        let index;
+        let symbol;
+
+        if(computerModeEasy){
+            index = computerChoice.getComputerChoiceEasy();
+            symbol = cpuEasy.symbol;
+        }
+        else if(computerModeHard){
+            // computerChoice.getComputerChoiceHard not yet created
+            return
+        }
+
+        const updateGUI = (index) => {
+            document.querySelectorAll('.square').forEach(square => {
+                if(square.getAttribute('data-index') === `${index}`){
+                    square.textContent = `${symbol}`;
+                }
+            })
+        }
+
+        const getEmptySquares = () => {
+            const board = gameBoard.getBoard();
+            const nullCount = board.filter(square => square === null);
+            return nullCount.length;
+        }
+
+        const squaresLeft = getEmptySquares();
+
+
+        // do not update GUI or gameBoard if the game has been won or tied
+        if(!gameBoard.getGameOver()){
+            updateGUI(index);
+            gameBoard.placeChoice(index, `${symbol}`);
+            gameBoard.checkWin();
+        }
     }
 
     const gameOver = () => {
         if(gameBoard.getGameOver()){
             let indexes = gameBoard.getWinningSquares();
+
             document.querySelectorAll('.square').forEach(square => {
+
                 const index = square.getAttribute('data-index');
+
                 if(indexes.toString().includes(index)){
+                    // if indexes.length is only 3, then there is a winner.  If not, then indexes.length === 9, and there is a tie which will color all squares red.
                     if(indexes.length === 3){
                         square.style.color = '#5dba6f';
                     }
-
                     else {
                         square.style.color = '#ed6559';
                     }
                 }
+
             })
         }
     }
-        
+
     return {
-        firstPlayer,
         getDataIndex,
         changeInputter,
-        getPlayer,
         placeChoice,
-        placeComputerChoice,
-        updateComputerGUI,
         gameOver,
     }
+
 })();
 
-const placeChoice = (e) => {
+// computerChoice module
+const computerChoice = (function(){
+    
+    const getComputerChoiceEasy = () => {
+        const board = gameBoard.getBoard();
+        const emptyLeft = board.filter(square => square === null);
+        const canChoose = () => {
+            if(emptyLeft.length >= 1){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        
+        const getRandomChoice = () => Math.floor(Math.random() * 8);
+
+        let index = getRandomChoice();
+
+        while(board[index] != null && canChoose()){
+            index = getRandomChoice();
+        }
+
+        return index;
+    }
+
+    return {
+        getComputerChoiceEasy,
+    }
+
+})();
+
+const handleSquareClick = (e) => {
     handleClicks.placeChoice(e);
     handleClicks.gameOver();
+
+
 }
 
 document.querySelectorAll('.square').forEach(square => {
-    square.addEventListener('click', placeChoice)
+    square.addEventListener('click', handleSquareClick)
 })
 
+const handleStartOver = () => {
+    gameBoard.resetGame();
+    
+    document.querySelectorAll('.square').forEach(square => {
+        square.style.color = '#313131';
+        square.textContent = '';
+    })
+}
 
-
+document.querySelector('.startOver').addEventListener('click', handleStartOver);
